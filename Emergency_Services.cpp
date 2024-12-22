@@ -333,7 +333,7 @@ int main() {
         case 3: {
             string start;
             cin.ignore();
-            cout << "Enter starting location (e.g., Hospital): ";
+            cout << "Enter starting location: ";
             getline(cin, start);
             emergencyGraph.dfs(start);
             break;
@@ -342,9 +342,9 @@ int main() {
         case 4: {
             string start, end;
             cin.ignore();
-            cout << "Enter starting location (e.g., Hospital): ";
+            cout << "Enter starting location: ";
             getline(cin, start);
-            cout << "Enter destination location (e.g., Accident Site): ";
+            cout << "Enter destination location: ";
             getline(cin, end);
             emergencyGraph.ambulanceRouteOptimization(start, end);
             break;
