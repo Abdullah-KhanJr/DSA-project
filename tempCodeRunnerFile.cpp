@@ -63,8 +63,8 @@ class Graph {
     vector<vector<pair<int, int>>> adjList;
 
     void dfsUtil(int nodeIndex, vector<bool>& visited) {
-        visited[nodeIndex] = true;
         cout << nodes[nodeIndex] << " ";
+        visited[nodeIndex] = true;
 
         for (auto& neighbor : adjList[nodeIndex]) {
             if (!visited[neighbor.first]) {
@@ -111,20 +111,19 @@ public:
             return;
         }
 
-        vector<bool> visited(nodes.size(), false);
         queue<int> q;
+        vector<bool> visited(nodes.size(), false);
 
         q.push(startIndex);
         visited[startIndex] = true;
 
         cout << "BFS Traversal starting from " << start << ": ";
         while (!q.empty()) {
-            int currentNode = q.front();
+            int nodeIndex = q.front();
             q.pop();
+            cout << nodes[nodeIndex] << " ";
 
-            cout << nodes[currentNode] << " ";
-
-            for (auto& neighbor : adjList[currentNode]) {
+            for (auto& neighbor : adjList[nodeIndex]) {
                 if (!visited[neighbor.first]) {
                     visited[neighbor.first] = true;
                     q.push(neighbor.first);
@@ -145,12 +144,13 @@ public:
         cout << "DFS Traversal starting from " << start << ": ";
         dfsUtil(startIndex, visited);
 
-        // Handle disconnected components
+        // Ensure disconnected components are also traversed
         for (size_t i = 0; i < nodes.size(); ++i) {
             if (!visited[i]) {
                 dfsUtil(i, visited);
             }
         }
+
         cout << endl;
     }
 
@@ -301,13 +301,13 @@ int main() {
     do {
         cout << "\nEmergency Services Menu:" << endl;
         cout << "1. Display Graph" << endl;
-        cout << "2. BFS Traversal" << endl;
-        cout << "3. DFS Traversal" << endl;
-        cout << "4. Ambulance Route Optimization" << endl;
-        cout << "5. Add Person to Crowd Stack" << endl;
+        cout << "2. BFS Traversal (Enter starting location, e.g., Hospital)" << endl;
+        cout << "3. DFS Traversal (Enter starting location, e.g., Hospital)" << endl;
+        cout << "4. Ambulance Route Optimization (Enter starting and destination locations, e.g., Hospital and Accident Site)" << endl;
+        cout << "5. Add Person to Crowd Stack (Enter name of person)" << endl;
         cout << "6. Remove Person from Crowd Stack" << endl;
         cout << "7. Display Crowd Stack" << endl;
-        cout << "8. Add Person to Crowd Queue" << endl;
+        cout << "8. Add Person to Crowd Queue (Enter name of person)" << endl;
         cout << "9. Remove Person from Crowd Queue" << endl;
         cout << "10. Display Crowd Queue" << endl;
         cout << "11. Empty Crowd Stack" << endl;
@@ -323,29 +323,26 @@ int main() {
 
         case 2: {
             string start;
-            cin.ignore();
-            cout << "Enter starting location: ";
-            getline(cin, start);
+            cout << "Enter starting location (e.g., Hospital): ";
+            cin >> start;
             emergencyGraph.bfs(start);
             break;
         }
 
         case 3: {
             string start;
-            cin.ignore();
             cout << "Enter starting location (e.g., Hospital): ";
-            getline(cin, start);
+            cin >> start;
             emergencyGraph.dfs(start);
             break;
         }
 
         case 4: {
             string start, end;
-            cin.ignore();
             cout << "Enter starting location (e.g., Hospital): ";
-            getline(cin, start);
+            cin >> start;
             cout << "Enter destination location (e.g., Accident Site): ";
-            getline(cin, end);
+            cin >> end;
             emergencyGraph.ambulanceRouteOptimization(start, end);
             break;
         }
