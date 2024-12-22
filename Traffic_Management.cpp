@@ -21,9 +21,6 @@ class Vehicles{
 
     void displayInfo(){
         cout<<" <-- ID: "<<id;
-        // cout<<" Type: "<<type;
-        // cout << "Number: ";
-        // cout << "Number: ";
     }
     
 };
@@ -141,7 +138,7 @@ class ListQue{
 class ArrayQue{
     public:
     int rear, front;
-    static const int size = 5;
+    static const int size = 100;
     Vehicles arr[size]; 
 
     ArrayQue(){
@@ -636,7 +633,7 @@ int main() {
         default:
             cout << "Invalid choice! Please try again." << endl;
         }
-    } while (choice != 6);
+    } while (choice != 7);
 
     return 0;
 }
