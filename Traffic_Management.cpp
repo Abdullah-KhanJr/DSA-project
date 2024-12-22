@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <string>
 #include <fstream> // For file handling
 using namespace std;
 
@@ -62,6 +64,7 @@ class ListQue{
             rear->next = newNode;
             rear = newNode;
         }
+
     } 
 
     void Dequeue() {
@@ -381,6 +384,183 @@ public:
     }
 };
 
+void bubbleSort(vector<string>& ids) {
+    int n = ids.size();
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < n - i - 1; ++j) {
+            if (ids[j] > ids[j + 1]) {
+                string temp = ids[j];
+                ids[j] = ids[j + 1];
+                ids[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void insertionSort(vector<string>& arr) {
+    int n = arr.size();
+    for (int i = 1; i < n; i++) {
+        string key = arr[i];
+        int j = i - 1;
+
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+void selectionSort(vector<string>& arr) {
+    int n = arr.size();
+    for (int i = 0; i < n - 1; i++) {
+        int minIndex = i;
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        swap(arr[i], arr[minIndex]);
+    }
+}
+
+void merge(vector<string>& arr, int left, int mid, int right) {
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    vector<string> L(n1), R(n2);
+
+    for (int i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0, k = left;
+
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k] = L[i];
+            i++;
+        } else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(vector<string>& arr, int left, int right) {
+    if (left < right) {
+        int mid = left + (right - left) / 2;
+
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+
+        merge(arr, left, mid, right);
+    }
+}
+
+int partition(vector<string>& arr, int low, int high) {
+    string pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+void quickSort(vector<string>& arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+
+void sortPassedVehicles(int algorithmChoice) {
+    ifstream inputFile("passed_vehicles.txt");
+    vector<string> ids;
+
+    if (!inputFile.is_open()) {
+        cout << "Error: Unable to open the file for reading vehicle IDs." << endl;
+        return;
+    }
+
+    string id;
+    while (getline(inputFile, id)) {
+        ids.push_back(id); // Read IDs into the vector
+    }
+    inputFile.close();
+
+    if (ids.empty()) {
+        cout << "No vehicle IDs to sort!" << endl;
+        return;
+    }
+
+    for (string s : ids){
+        cout<<s<<" ";
+    }
+
+    switch (algorithmChoice) {
+        case 1:
+            bubbleSort(ids);
+            break;
+        case 2:
+            insertionSort(ids);
+            break;
+        case 3:
+            selectionSort(ids);
+            break;
+        case 4:
+            mergeSort(ids, 0, ids.size() - 1);
+            break;
+        case 5:
+            quickSort(ids, 0, ids.size() - 1);
+            break;
+        default:
+            cout << "Invalid sorting algorithm choice!" << endl;
+            return;
+    }
+    cout<<endl; 
+    for (string s : ids){
+        cout<<s<<" ";
+    }
+
+
+    ofstream outputFile("passed_vehicles.txt"); // Open file in truncate mode
+    if (!outputFile.is_open()) {
+        cout << "Error: Unable to open the file for writing sorted vehicle IDs." << endl;
+        return;
+    }
+
+    for (const string& sortedId : ids) {
+        outputFile << sortedId << endl; // Write sorted IDs back to the file
+    }
+    outputFile.close();
+
+    cout << "Vehicle IDs have been sorted and updated in the file!" << endl;
+}
+
+
 int main() {
     system("CLS");
     Road road;
@@ -394,7 +574,8 @@ int main() {
         cout << "3. Display All Lanes" << endl;
         cout << "4. Update Traffic Signals" << endl;
         cout << "5. Display Traffic Signals" << endl;
-        cout << "6. Exit" << endl;
+        cout << "6. Sort Vehicle IDs" << endl; 
+        cout << "7. Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -433,7 +614,22 @@ int main() {
             road.displayAllSignals();
             break;
 
-        case 6:
+        case 6: {
+            int sortChoice;
+            cout << "Select Sorting Algorithm:" << endl;
+            cout << "1. Bubble Sort" << endl;
+            cout << "2. Insertion Sort" << endl;
+            cout << "3. Selection Sort" << endl;
+            cout << "4. Merge Sort" << endl;
+            cout << "5. Quick Sort" << endl;
+            cout << "Enter your choice: ";
+            cin >> sortChoice;
+
+            sortPassedVehicles(sortChoice); 
+            break;
+        }
+
+        case 7:
             cout << "Exiting the system. Goodbye!" << endl;
             break;
 
